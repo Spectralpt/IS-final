@@ -1,0 +1,35 @@
+services:
+  grpc-server:
+    build: ./grpc-server
+    container_name: grpc-server
+    ports:
+      - "50051:50051"
+    volumes:
+      - grpc-server:/app/media
+    environment:
+      - GRPC_SERVER_PORT=50051
+      - MAX_WORKERS=10
+      - MEDIA_PATH=/app/media
+      - DBNAME=myDatabase
+      - DBUSERNAME=myUser
+      - DBPASSWORD=myPassword
+      - DBHOST=db
+      - DBPORT=5432
+    depends_on:
+      - db
+
+  db:
+    image: postgres:latest
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: myUser
+      POSTGRES_PASSWORD: myPassword
+      POSTGRES_DB: myDatabase
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  grpc-server:
+  pgdata:
